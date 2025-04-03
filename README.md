@@ -31,10 +31,10 @@ EventEase Mobile App.
 <img src="assets/images/signin-screen.png">  
 
 # Tabs Screen
-<img src="assets/images/home.jpg">   
-<img src="assets/images/calendar.jpg">   
-<img src="assets/images/notification.jpg">   
-<img src="assets/images/profile.jpg">   
+<img src="assets/images/home-screen.jpg">   
+<img src="assets/images/calendar-screen.jpg">   
+<img src="assets/images/notification-screen.jpg">   
+<img src="assets/images/profile-screen.jpg">   
 
 # Screen  Demo
 https://www.youtube.com/watch?v=_i2bWz62oKk
