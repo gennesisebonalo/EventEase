@@ -19,16 +19,16 @@ EventEase Mobile App.
 * HTML, CSS and JS
 
 # Onboarding Screen
-<img src="assets/images/onboarding-screen.png">  
+<img src="assets/images/onboarding-screen.jpg">  
 
 # Role Selection Screen
-<img src="assets/images/roleselection-screen.png"> 
+<img src="assets/images/roleselection-screen.jpg"> 
 
 # Sign Up Screen
-<img src="assets/images/signup-screen.png">  
+<img src="assets/images/signup-screen.jpg">  
 
 # Sign In Screen
-<img src="assets/images/signin-screen.png">  
+<img src="assets/images/signin-screen.jpg">  
 
 # Tabs Screen
 <img src="assets/images/home-screen.jpg">   
