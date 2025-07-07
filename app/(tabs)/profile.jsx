@@ -1,14 +1,19 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { Ionicons } from "@expo/vector-icons"
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { router, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
+  const router = useRouter();
+  // Restore original profile design, no absent events section
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#4A56E2" }}>
       {/* Header */}
-      <View style={{ 
-        padding: 16, 
-        backgroundColor: "#4A56E2", 
+      <View style={{
+        padding: 16,
+        backgroundColor: "#4A56E2",
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -29,11 +34,7 @@ export default function Profile() {
             <View style={{ position: 'relative', marginBottom: 10 }}>
               <Image
                 source={require("../../assets/images/profile-pic.png")}
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                }}
+                style={{ width: 80, height: 80, borderRadius: 40 }}
               />
             </View>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Arnel Demotor</Text>
@@ -42,9 +43,9 @@ export default function Profile() {
           </View>
 
           {/* Profile Actions */}
-          <View style={{ 
-            flexDirection: 'row', 
-            gap: 10, 
+          <View style={{
+            flexDirection: 'row',
+            gap: 10,
             marginBottom: 25,
             paddingHorizontal: 20
           }}>
@@ -70,14 +71,14 @@ export default function Profile() {
 
           {/* Contact Information */}
           <View style={{ marginBottom: 30 }}>
-            <View style={{ 
-              flexDirection: 'row', 
+            <View style={{
+              flexDirection: 'row',
               alignItems: 'center',
               marginBottom: 20
             }}>
-              <View style={{ 
-                width: 40, 
-                height: 40, 
+              <View style={{
+                width: 40,
+                height: 40,
                 backgroundColor: '#F5F5F5',
                 borderRadius: 20,
                 justifyContent: 'center',
@@ -96,13 +97,10 @@ export default function Profile() {
               </TouchableOpacity>
             </View>
 
-            <View style={{ 
-              flexDirection: 'row', 
-              alignItems: 'center'
-            }}>
-              <View style={{ 
-                width: 40, 
-                height: 40, 
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{
+                width: 40,
+                height: 40,
                 backgroundColor: '#F5F5F5',
                 borderRadius: 20,
                 justifyContent: 'center',
@@ -127,7 +125,7 @@ export default function Profile() {
             <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 15 }}>Event History</Text>
             <View style={{ gap: 15 }}>
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image 
+                <Image
                   source={require("../../assets/images/event1.png")}
                   style={{ width: 60, height: 60, borderRadius: 8, marginRight: 15 }}
                 />
@@ -138,7 +136,7 @@ export default function Profile() {
               </TouchableOpacity>
 
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image 
+                <Image
                   source={require("../../assets/images/event2.png")}
                   style={{ width: 60, height: 60, borderRadius: 8, marginRight: 15 }}
                 />
@@ -149,7 +147,7 @@ export default function Profile() {
               </TouchableOpacity>
 
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image 
+                <Image
                   source={require("../../assets/images/event3.png")}
                   style={{ width: 60, height: 60, borderRadius: 8, marginRight: 15 }}
                 />
@@ -162,35 +160,44 @@ export default function Profile() {
           </View>
 
           {/* Action Buttons */}
-          <View style={{ 
-            flexDirection: 'row', 
-            gap: 10, 
+          <View style={{
+            flexDirection: 'row',
+            gap: 10,
             marginTop: 30,
             marginBottom: 20,
             paddingHorizontal: 20
           }}>
-            <TouchableOpacity style={{
-              flex: 1,
-              backgroundColor: '#4A56E2',
-              padding: 12,
-              borderRadius: 8,
-              alignItems: 'center'
-            }}>
+            <TouchableOpacity
+              onPress={() => router.push('/attendance')}
+              style={{
+                flex: 1,
+                backgroundColor: '#4A56E2',
+                padding: 12,
+                borderRadius: 8,
+                alignItems: 'center'
+              }}
+            >
               <Text style={{ color: 'white', fontWeight: 'bold' }}>Attendance</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{
-              flex: 1,
-              backgroundColor: '#F5F5F5',
-              padding: 12,
-              borderRadius: 8,
-              alignItems: 'center'
-            }}>
+
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor: '#F5F5F5',
+                padding: 12,
+                borderRadius: 8,
+                alignItems: 'center'
+              }}
+              onPress={async () => {
+                await AsyncStorage.clear();
+                router.replace('/sign-in');
+              }}
+            >
               <Text style={{ color: '#666', fontWeight: 'bold' }}>Log out</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
+  );
 }
-

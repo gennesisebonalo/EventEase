@@ -22,22 +22,10 @@ export default function App() {
 
             {/* Buttons */}
             <CustomButton
-              title="Attendee"
+              title="Explore Event"
               handlePress={() => router.push("/sign-in")}
-              containerStyles={{ width: "90%", marginTop: 20, backgroundColor: "#4A56E2" }}
+              containerStyles={{ width: "50%", marginTop: 20, backgroundColor: "#4A56E2" }}
               textStyles={{ color: "white" }}
-            />
-            <CustomButton
-              title="Coordinator"
-              containerStyles={{
-                width: "90%",
-                marginTop: 20,
-                backgroundColor: "white",
-                borderWidth: 1,
-                borderColor: "#4A56E2",
-              }}
-              textStyles={{ color: "#4A56E2" }}
-              handlePress={() => router.push("/sign-in")}
             />
           </View>
         </ScrollView>

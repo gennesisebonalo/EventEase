@@ -1,16 +1,56 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native"
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useRouter } from "expo-router"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
+async function setAttendanceStatus(eventId, statusObj) {
+  try {
+    const existing = await AsyncStorage.getItem('attendanceStatus');
+    let attendanceStatus = existing ? JSON.parse(existing) : {};
+    attendanceStatus[eventId] = statusObj;
+    await AsyncStorage.setItem('attendanceStatus', JSON.stringify(attendanceStatus));
+  } catch (e) {
+    // handle error
+  }
+}
 
 export default function Notification() {
+  const router = useRouter();
   const notifications = [
     {
       id: "1",
-      title: "New Announcement",
-      time: "10:30 AM",
-      description: "School Foundation Day Celebration!",
+      title: "Foundation Day",
+      time: "March 15, 2023",
+      description: "This is a special day celebrating the foundation of our organization. Join us for fun, food, and festivities!",
+      isRead: false,
+    },
+    {
+      id: "2",
+      title: "Zumba",
+      time: "March 20, 2023",
+      description: "Get ready to dance and sweat it out with our Zumba event! All levels welcome.",
+      isRead: false,
+    },
+    {
+      id: "3",
+      title: "English Day",
+      time: "March 25, 2023",
+      description: "Celebrate English language and culture with activities, games, and more.",
       isRead: false,
     },
   ]
+
+  const handleDecline = async (id) => {
+    await setAttendanceStatus(id, { status: 'absent' });
+    Alert.alert('Absent', 'You are marked as absent for this event.');
+  };
+
+  const handleJoinNow = async (id) => {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    await setAttendanceStatus(id, { status: 'checkedIn', checkedInTime: timeString });
+    router.push('/rfid-tap');
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#4A56E2" }}>
@@ -54,18 +94,6 @@ export default function Notification() {
 
               <Text style={{ marginBottom: 15 }}>{notification.description}</Text>
 
-              <Text
-                style={{
-                  color: "#9E9E9E",
-                  fontSize: 12,
-                  marginBottom: 15,
-                }}
-              >
-                You are invited to invite everyone to the STEM Foundation Day Celebration! This special occasion invites
-                everyone to explore the wonders of science, technology, engineering, and mathematics. Join us as we
-                celebrate with demonstrations, exhibitions, and hands-on activities!
-              </Text>
-
               <View
                 style={{
                   flexDirection: "row",
@@ -80,11 +108,12 @@ export default function Notification() {
                     borderRadius: 20,
                     alignSelf: "flex-start",
                   }}
+                  onPress={() => handleJoinNow(notification.id)}
                 >
                   <Text style={{ color: "white", fontSize: 12 }}>Join Now</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDecline(notification.id)}>
                   <Text style={{ color: "#9E9E9E", fontSize: 12 }}>Decline</Text>
                 </TouchableOpacity>
               </View>

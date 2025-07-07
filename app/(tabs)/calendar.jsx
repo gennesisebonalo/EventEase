@@ -3,37 +3,84 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 
-export default function Calendar() {
-  const [selectedDate, setSelectedDate] = useState(15) // Default selected date
+function formatDate(year, month, day) {
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
 
-  // Mock data for calendar events
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+export default function Calendar() {
+  // Events with date field
   const events = [
     {
       id: 1,
-      title: "Today's Event",
+      title: "Foundation Day",
       time: "09:00 AM",
-      description: "Comsopolis Code...",
-      isActive: true,
+      description: "School Foundation Day Celebration!",
+      date: "2023-02-14",
     },
     {
       id: 2,
-      title: "Today's Event",
-      time: "09:00 AM",
-      description: "Comsopolis Code...",
-      isActive: false,
+      title: "Zumba",
+      time: "10:00 AM",
+      description: "Get ready to dance and sweat it out with our Zumba event!",
+      date: "2023-03-20",
     },
     {
       id: 3,
-      title: "Today's Event",
-      time: "09:00 AM",
-      description: "Comsopolis Code...",
-      isActive: false,
+      title: "English Day",
+      time: "01:00 PM",
+      description: "Celebrate English language and culture with activities, games, and more.",
+      date: "2023-03-25",
     },
-  ]
+  ];
 
-  // Calendar data
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-  const dates = Array.from({ length: 31 }, (_, i) => i + 1)
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  // State for current month/year
+  const today = new Date();
+  const [currentYear, setCurrentYear] = useState(2023);
+  const [currentMonth, setCurrentMonth] = useState(2); // 2 = February
+
+  // Get number of days in month
+  function getDaysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+  const numDays = getDaysInMonth(currentYear, currentMonth);
+  const dates = Array.from({ length: numDays }, (_, i) => i + 1);
+
+  // Default selected date: today if in current month, else 1st
+  const defaultSelected = (today.getFullYear() === currentYear && today.getMonth() + 1 === currentMonth)
+    ? today.getDate() : 1;
+  const [selectedDate, setSelectedDate] = useState(defaultSelected);
+
+  // Update selected date if month changes
+  function handleMonthChange(next) {
+    let newMonth = currentMonth + (next ? 1 : -1);
+    let newYear = currentYear;
+    if (newMonth < 1) {
+      newMonth = 12;
+      newYear--;
+    } else if (newMonth > 12) {
+      newMonth = 1;
+      newYear++;
+    }
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    setSelectedDate(1);
+  }
+
+  // Get events for selected date
+  const selectedDateString = formatDate(currentYear, currentMonth, selectedDate);
+  const eventsForSelectedDate = events.filter(e => e.date === selectedDateString);
+
+  // Dates with events in current month
+  const eventDates = events
+    .filter(e => e.date.startsWith(`${currentYear}-${String(currentMonth).padStart(2, "0")}`))
+    .map(e => Number(e.date.split("-")[2]));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#4A56E2" }}>
@@ -48,32 +95,32 @@ export default function Calendar() {
       <View style={{ flex: 1, backgroundColor: "white", borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
         <ScrollView style={{ padding: 16 }}>
           {/* Month selector */}
-          <View style={{ 
-            flexDirection: "row", 
-            justifyContent: "space-between", 
+          <View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
             alignItems: "center",
             marginBottom: 20,
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleMonthChange(false)}>
               <Ionicons name="chevron-back" size={24} color="#666" />
             </TouchableOpacity>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>FEBRUARY</Text>
-            <TouchableOpacity>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{monthNames[currentMonth - 1].toUpperCase()} {currentYear}</Text>
+            <TouchableOpacity onPress={() => handleMonthChange(true)}>
               <Ionicons name="chevron-forward" size={24} color="#666" />
             </TouchableOpacity>
           </View>
 
           {/* Days of week */}
-          <View style={{ 
-            flexDirection: "row", 
+          <View style={{
+            flexDirection: "row",
             justifyContent: "space-between",
             marginBottom: 15,
           }}>
             {days.map((day) => (
-              <Text 
-                key={day} 
-                style={{ 
-                  width: 40, 
+              <Text
+                key={day}
+                style={{
+                  width: 40,
                   textAlign: "center",
                   color: "#666",
                   fontSize: 12,
@@ -85,8 +132,8 @@ export default function Calendar() {
           </View>
 
           {/* Calendar grid */}
-          <View style={{ 
-            flexDirection: "row", 
+          <View style={{
+            flexDirection: "row",
             flexWrap: "wrap",
             marginBottom: 30,
           }}>
@@ -112,7 +159,7 @@ export default function Calendar() {
                 >
                   {date}
                 </Text>
-                {date === 15 && ( // Indicator for events
+                {eventDates.includes(date) && (
                   <View
                     style={{
                       width: 4,
@@ -128,42 +175,40 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Today's Events */}
+          {/* Events for selected date */}
           <View>
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>Today's Event</Text>
-            
-            {/* Event list */}
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
+              {eventsForSelectedDate.length > 0 ? "Events" : "No Events"}
+            </Text>
             <View style={{ gap: 15 }}>
-              {events.map((event) => (
-                <View
-                  key={event.id}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "#F5F5F5",
-                    padding: 15,
-                    borderRadius: 12,
-                    borderLeftWidth: 4,
-                    borderLeftColor: event.isActive ? "#4A56E2" : "transparent",
-                  }}
-                >
-                  {/* Time */}
-                  <View style={{ marginRight: 15 }}>
-                    <Text style={{ fontWeight: "bold" }}>{event.time}</Text>
+              {eventsForSelectedDate.length > 0 ? (
+                eventsForSelectedDate.map((event) => (
+                  <View
+                    key={event.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: "#F5F5F5",
+                      padding: 15,
+                      borderRadius: 12,
+                      borderLeftWidth: 4,
+                      borderLeftColor: "#4A56E2",
+                    }}
+                  >
+                    {/* Time */}
+                    <View style={{ marginRight: 15 }}>
+                      <Text style={{ fontWeight: "bold" }}>{event.time}</Text>
+                    </View>
+                    {/* Event details */}
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontWeight: "bold" }}>{event.title}</Text>
+                      <Text style={{ color: "#666", marginTop: 5 }}>{event.description}</Text>
+                    </View>
                   </View>
-
-                  {/* Event details */}
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontWeight: "bold" }}>{event.title}</Text>
-                    <Text style={{ color: "#666", marginTop: 5 }}>{event.description}</Text>
-                  </View>
-
-                  {/* More options */}
-                  <TouchableOpacity>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#666" />
-                  </TouchableOpacity>
-                </View>
-              ))}
+                ))
+              ) : (
+                <Text style={{ color: "#888" }}>No events for this date.</Text>
+              )}
             </View>
           </View>
         </ScrollView>
