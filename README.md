@@ -20,7 +20,7 @@ EventEase Mobile App.
 
 # Onboarding Screen
 <img src="assets/images/onboarding.jpg">  
-<img src="assets/images/selection.jpg"> 
+<img src="assets/images/selecting.jpg"> 
 
 # Sign Up Screen
 <img src="assets/images/sign-up.jpg">  
